@@ -3,7 +3,10 @@ import { ITasksState, ITask } from '../../types/types';
 import { TaskStatus } from '../../types/enum';
 
 const initialState: ITasksState = {
-  tasksList: [{id: 1, key: 1, title: 'Task 1', status: TaskStatus.PENDING, description: 'to do', deadline: '2024-05-06'}],
+  tasksList: [
+    {id: 1, key: 1, title: 'Task 1', status: TaskStatus.PENDING, description: 'to do 1', deadline: '2024-20-06'}, 
+    {id: 2, key: 2, title: 'Task 2', status: TaskStatus.PENDING, description: 'to do 2', deadline: '2024-05-06'}
+  ],
   trashList: [],
 };
 
@@ -11,6 +14,24 @@ const tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
+    checkAndUpdateTaskStatus: (state, action: PayloadAction<ITask[]>) => {
+      const tasks = action.payload;
+      const currentDate = new Date().toISOString().split("T")[0];
+
+      const updatedTasks: ITask[] = tasks.map((task) => {
+        if (
+          task.deadline &&
+          task.deadline < currentDate &&
+          task.status !== TaskStatus.COMPLETED
+        ) {
+          return { ...task, status: TaskStatus.OVERDUE };
+        }
+    
+        return task;
+      });
+
+      state.tasksList = updatedTasks;
+    },
     addTask: (state: ITasksState, action: PayloadAction<{ newTask: ITask}>) => {
       const newTask: ITask = {
         ...action.payload.newTask,
@@ -18,7 +39,6 @@ const tasksSlice = createSlice({
       };
 
       state.tasksList.push(newTask);
-
     },
     editTask: (state: ITasksState, action: PayloadAction<ITask>) => {
       const { tasksList } = state;
@@ -49,6 +69,6 @@ const tasksSlice = createSlice({
   },
 });
 
-export const { addTask, deleteTask, editTask, completeTask } = tasksSlice.actions;
+export const { checkAndUpdateTaskStatus, addTask, deleteTask, editTask, completeTask } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import ToDoTable from "../../components/to-do-table/ToDoTable";
 import { useSelector } from "react-redux";
 import { IStateType, ITask, IToDoTableColumn } from "../../types/types";
@@ -8,16 +8,26 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { addTask, completeTask, deleteTask, editTask } from "../../store";
+import {
+  addTask,
+  checkAndUpdateTaskStatus,
+  completeTask,
+  deleteTask,
+  editTask,
+} from "../../store";
 import { EditAddTaskDialog } from "../edit-add-task-dialog";
 import { Badge, Button, Space } from "antd";
 import "./all-tasks-list.scss";
 import { TaskStatus } from "../../types/enum";
+import { shallowEqual } from "react-redux";
 
 const AllTasksList: React.FC = () => {
   const dispatch = useDispatch();
 
-  const { tasksList } = useSelector((state: IStateType) => state.tasks);
+  const { tasksList } = useSelector(
+    (state: IStateType) => state.tasks,
+    shallowEqual
+  );
 
   const [showEditAddTaskDialog, setShowEditAddTaskDialog] =
     useState<boolean>(false);
@@ -52,6 +62,10 @@ const AllTasksList: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    dispatch(checkAndUpdateTaskStatus(tasksList));
+  }, [JSON.stringify(tasksList)]);
+
   const renderNewTaskButton = (): ReactElement => {
     return (
       <div className={"all-tasks-list__add-button"}>
@@ -77,6 +91,10 @@ const AllTasksList: React.FC = () => {
 
       case TaskStatus.COMPLETED:
         color = "green";
+        break;
+
+      case TaskStatus.OVERDUE:
+        color = "grey";
         break;
 
       default:
@@ -105,10 +123,13 @@ const AllTasksList: React.FC = () => {
           onClick={() => onEditTodoItem(item)}
           style={{ color: "blue" }}
         />
-        <CheckCircleOutlined
-          onClick={() => onCompleteTodoItem(item.id as number)}
-          style={{ color: "green" }}
-        />
+        {item.status !== TaskStatus.OVERDUE &&
+          item.status !== TaskStatus.COMPLETED && (
+            <CheckCircleOutlined
+              onClick={() => onCompleteTodoItem(item.id as number)}
+              style={{ color: "green" }}
+            />
+          )}
       </Space>
     );
   };
