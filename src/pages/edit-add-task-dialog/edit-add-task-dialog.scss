@@ -1,0 +1,15 @@
+.edit-add-task-dialog__inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 40px 0;
+}
+
+.edit-add-task-dialog__error-message {
+    color: #a10b00;
+}
+
+.edit-add-task-dialog__button {
+    display: flex;
+    justify-content: end;
+}
