@@ -1,9 +1,7 @@
 import React, { ReactElement, useState } from "react";
-import ToDoTable, {
-  IToDoTableColumn,
-} from "../../components/to-do-table/ToDoTable";
+import ToDoTable from "../../components/to-do-table/ToDoTable";
 import { useSelector } from "react-redux";
-import { IStateType, ITask } from "../../types/types";
+import { IStateType, ITask, IToDoTableColumn } from "../../types/types";
 import {
   CheckCircleOutlined,
   DeleteOutlined,
@@ -12,16 +10,18 @@ import {
 import { useDispatch } from "react-redux";
 import { addTask, completeTask, deleteTask, editTask } from "../../store";
 import { EditAddTaskDialog } from "../edit-add-task-dialog";
-import { Button, Space } from "antd";
+import { Badge, Button, Space } from "antd";
 import "./all-tasks-list.scss";
+import { TaskStatus } from "../../types/enum";
 
 const AllTasksList: React.FC = () => {
   const dispatch = useDispatch();
 
   const { tasksList } = useSelector((state: IStateType) => state.tasks);
 
-  const [showEditTodoDialog, setShowEditToDoDialog] = useState(false);
-  const [editingItem, setEditingItem] = useState<ITask | null>(null);
+  const [showEditAddTaskDialog, setShowEditAddTaskDialog] =
+    useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
 
   const columns: IToDoTableColumn[] = [
     {
@@ -33,6 +33,7 @@ const AllTasksList: React.FC = () => {
       key: "status",
       title: "Status",
       dataIndex: "status",
+      render: (status) => renderStatusColumn(status),
     },
     {
       key: "deadline",
@@ -46,25 +47,51 @@ const AllTasksList: React.FC = () => {
     },
     {
       key: "actions",
-      title: "Actions",
       dataIndex: "actions",
       render: (_value: any, item: any) => renderActions(item),
     },
   ];
 
-  const renderAddTaskButton = (): ReactElement => {
+  const renderNewTaskButton = (): ReactElement => {
     return (
       <div className={"all-tasks-list__add-button"}>
-        <Button type="primary" onClick={onOpenAddTaskDialog}>
-          {"Add Task"}
+        <Button type="primary" onClick={onShowEditAddTaskDialog}>
+          {"New Task"}
         </Button>
       </div>
     );
   };
 
-  const onOpenAddTaskDialog = (): void => {
-    setEditingItem(null);
-    setShowEditToDoDialog(true);
+  const onShowEditAddTaskDialog = (): void => {
+    setSelectedTask(null);
+    setShowEditAddTaskDialog(true);
+  };
+
+  const renderStatusColumn = (status: string): ReactElement => {
+    let color: string;
+
+    switch (status) {
+      case TaskStatus.REMOVED:
+        color = "red";
+        break;
+
+      case TaskStatus.COMPLETED:
+        color = "green";
+        break;
+
+      default:
+        color = "orange";
+        break;
+    }
+
+    return (
+      <Badge
+        color={color}
+        text={
+          <span className={"all-tasks-list__status-column-text"}>{status}</span>
+        }
+      />
+    );
   };
 
   const renderActions = (item: ITask): ReactElement => {
@@ -91,23 +118,23 @@ const AllTasksList: React.FC = () => {
   };
 
   const onEditTodoItem = (item: ITask): void => {
-    setEditingItem(item);
-    setShowEditToDoDialog(true);
+    setSelectedTask(item);
+    setShowEditAddTaskDialog(true);
   };
 
   const onCompleteTodoItem = (id: number): void => {
     dispatch(completeTask({ id }));
   };
 
-  const onHideEditToDoDialog = (): void => {
-    setEditingItem(null);
-    setShowEditToDoDialog(false);
+  const onHideEditAddTaskDialog = (): void => {
+    setSelectedTask(null);
+    setShowEditAddTaskDialog(false);
   };
 
-  const onSubmit = (data: ITask): void => {
-    if (editingItem) {
+  const onSubmitEditAddTaskDialog = (data: ITask): void => {
+    if (selectedTask) {
       const editedData: ITask = {
-        ...editingItem,
+        ...selectedTask,
         ...data,
       };
 
@@ -122,20 +149,24 @@ const AllTasksList: React.FC = () => {
       dispatch(addTask({ newTask }));
     }
 
-    setShowEditToDoDialog(false);
-    setEditingItem(null);
+    setShowEditAddTaskDialog(false);
+    setSelectedTask(null);
   };
 
   return (
     <>
-      {renderAddTaskButton()}
+      {renderNewTaskButton()}
       <ToDoTable columns={columns} data={tasksList} />
-      <EditAddTaskDialog
-        isVisible={showEditTodoDialog}
-        onHide={onHideEditToDoDialog}
-        initialValues={editingItem as any}
-        onSubmit={onSubmit}
-      />
+      {showEditAddTaskDialog && (
+        <EditAddTaskDialog
+          isVisible={showEditAddTaskDialog}
+          onHide={onHideEditAddTaskDialog}
+          initialValues={
+            selectedTask || { title: "", description: "", deadline: "" }
+          }
+          onSubmit={onSubmitEditAddTaskDialog}
+        />
+      )}
     </>
   );
 };

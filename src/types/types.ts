@@ -1,3 +1,4 @@
+import { ReactElement, ReactNode } from "react";
 import { TaskStatus } from "./enum";
 
 export interface ITask {
@@ -8,6 +9,19 @@ export interface ITask {
     description?: string;
     deadline?: any;
 }
+
+export interface IToDoTableColumn {
+    key: string;
+    title?: any;
+    dataIndex?: string | string[];
+    render?: (value: any, itemData: object) => ReactElement;
+  }
+
+  export interface IToDoTabData {
+    key: string;
+    label: ReactNode;
+    children: ReactNode;
+  }
 
 export interface IFormData {
     title: string;

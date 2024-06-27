@@ -41,7 +41,6 @@ const EditAddTaskDialog: React.FC<IEditAddTaskDialogProps> = ({
           <Controller
             name="title"
             control={control}
-            defaultValue={initialValues?.title}
             render={({ field }) => (
               <Input placeholder={"Title*"} type="text" {...field} />
             )}
@@ -54,7 +53,6 @@ const EditAddTaskDialog: React.FC<IEditAddTaskDialogProps> = ({
           <Controller
             name="description"
             control={control}
-            defaultValue={initialValues?.description}
             render={({ field }) => (
               <TextArea placeholder={"Description"} {...field} />
             )}
@@ -64,14 +62,12 @@ const EditAddTaskDialog: React.FC<IEditAddTaskDialogProps> = ({
           <Controller
             name="deadline"
             control={control}
-            defaultValue={initialValues?.deadline}
             render={({ field }) => (
               <Input placeholder={"Deadline"} type="date" {...field} />
             )}
           />
         </div>
       </div>
-
       <div className={"edit-add-task-dialog__button"}>
         <Button htmlType="submit" type="primary">
           {initialValues?.title ? "Update" : "Add"}
@@ -83,19 +79,11 @@ const EditAddTaskDialog: React.FC<IEditAddTaskDialogProps> = ({
   const handleFormSubmit = (data: any): void => {
     if (onSubmit) {
       onSubmit(data);
-      reset();
-    }
-  };
-
-  const onCancel = (): void => {
-    reset();
-    if (onHide) {
-      onHide();
     }
   };
 
   return (
-    <ToDoDialog isVisible={isVisible} body={renderBody()} onHide={onCancel} />
+    <ToDoDialog isVisible={isVisible} body={renderBody()} onCancel={onHide} />
   );
 };
 

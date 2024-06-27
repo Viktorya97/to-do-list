@@ -5,7 +5,7 @@ interface IToDoDialogProps {
   title?: string;
   isVisible: boolean;
   body?: ReactElement | ReactElement[] | string | string[];
-  onHide?: () => void;
+  onCancel?: () => void;
   style?: React.CSSProperties;
   className?: string;
 }
@@ -14,7 +14,7 @@ const ToDoDialog: React.FC<IToDoDialogProps> = ({
   title,
   isVisible,
   body,
-  onHide,
+  onCancel,
   style,
   className,
 }) => {
@@ -23,7 +23,7 @@ const ToDoDialog: React.FC<IToDoDialogProps> = ({
       title={title}
       open={isVisible}
       footer={null}
-      onCancel={onHide}
+      onCancel={onCancel}
       className={className}
     >
       <div style={style}>{body}</div>

@@ -1,9 +1,9 @@
-import React from "react";
-import ToDoTable, {
-  IToDoTableColumn,
-} from "../../components/to-do-table/ToDoTable";
+import React, { ReactElement } from "react";
+import ToDoTable from "../../components/to-do-table/ToDoTable";
 import { useSelector } from "react-redux";
-import { IStateType } from "../../types/types";
+import { IStateType, IToDoTableColumn } from "../../types/types";
+import { Badge } from "antd";
+import "./trash-list.scss";
 
 const TrashList: React.FC = () => {
   const { trashList } = useSelector((state: IStateType) => state.tasks);
@@ -18,6 +18,7 @@ const TrashList: React.FC = () => {
       key: "status",
       title: "Status",
       dataIndex: "status",
+      render: (status) => renderStatusColumn(status),
     },
     {
       key: "deadline",
@@ -30,6 +31,17 @@ const TrashList: React.FC = () => {
       dataIndex: "description",
     },
   ];
+
+  const renderStatusColumn = (status: string): ReactElement => {
+    return (
+      <Badge
+        color={"red"}
+        text={
+          <span className={"trash-list__status-column-text"}>{status}</span>
+        }
+      />
+    );
+  };
 
   return <ToDoTable columns={columns} data={trashList} />;
 };

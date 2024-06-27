@@ -1,22 +1,6 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { Table } from "antd";
-import { ITask } from "../../types/types";
-
-export interface IToDoTableDataItem {
-  id: number | null;
-  key: number | null;
-  title: string;
-  status: string;
-  description?: string;
-  deadline?: string;
-}
-
-export interface IToDoTableColumn {
-  key: string;
-  title?: any;
-  dataIndex?: string | string[];
-  render?: (value: any, itemData: object) => ReactElement;
-}
+import { ITask, IToDoTableColumn } from "../../types/types";
 
 interface IToDoTableProps {
   columns: IToDoTableColumn[];

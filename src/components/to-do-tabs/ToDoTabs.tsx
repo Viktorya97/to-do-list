@@ -1,13 +1,8 @@
+import React from "react";
 import { Tabs } from "antd";
-import React, { ReactNode } from "react";
+import { IToDoTabData } from "../../types/types";
 
-export interface IToDoTabData {
-  key: string;
-  label: ReactNode;
-  children: ReactNode;
-}
-
-export interface IToDoTabsProps {
+interface IToDoTabsProps {
   items: IToDoTabData[];
   activeKey?: string;
   defaultActiveKey?: string;

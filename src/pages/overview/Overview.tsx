@@ -1,8 +1,9 @@
 import React, { ReactElement } from "react";
 import { AllTasksList } from "../all-tasks-list/AllTasksList";
-import { IToDoTabData, ToDoTabs } from "../../components/to-do-tabs";
+import { ToDoTabs } from "../../components/to-do-tabs";
 import { TrashList } from "../trash-list";
 import "./overview.scss";
+import { IToDoTabData } from "../../types/types";
 
 const Overview: React.FC = () => {
   const renderAllTasksLstTab = (): ReactElement => {

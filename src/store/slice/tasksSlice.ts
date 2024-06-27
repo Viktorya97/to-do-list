@@ -42,7 +42,7 @@ const tasksSlice = createSlice({
 
       if (deletedItem) {
         state.tasksList = tasksList.filter((item) => item.id !== action.payload.id);
-        deletedItem.status = TaskStatus.DELETED;
+        deletedItem.status = TaskStatus.REMOVED;
         state.trashList.push(deletedItem);
       }
     },
