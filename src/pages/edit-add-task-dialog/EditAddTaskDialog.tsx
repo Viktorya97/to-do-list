@@ -9,8 +9,7 @@ import "./edit-add-task-dialog.scss";
 
 interface IEditAddTaskDialogProps {
   isVisible: boolean;
-  initialValues?: { title?: string; description?: string; deadline?: any };
-  renderFooter?: (onSubmit: any) => ReactElement | string;
+  initialValues?: { title?: string; description?: string; deadline?: string };
   onHide?: () => void;
   onSubmit?: (data: any) => void;
 }

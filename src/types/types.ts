@@ -7,7 +7,7 @@ export interface ITask {
     title: string;
     status: TaskStatus;
     description?: string;
-    deadline?: any;
+    deadline?: string;
 }
 
 export interface IToDoTableColumn {
